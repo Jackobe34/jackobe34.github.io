@@ -94,7 +94,8 @@
       this.root = root;
       this.api = (root.dataset.api || (isLocal ? location.origin : "")).replace(/\/$/, "");
       this.sitekey = isLocal ? TEST_SITEKEY : root.dataset.sitekey;
-      this.contact = safeUrl(root.dataset.contact);
+      const contact = root.dataset.contact || "";
+      this.contact = safeUrl(contact) || (/^#[\w-]+$/.test(contact) ? contact : null);  // or an in-page anchor
       this.warmed = false;
       this.busy = false;
       this.build();

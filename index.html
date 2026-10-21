@@ -1,63 +1,181 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jeremiah Athmer</title>
-  <meta name="description" content="Jeremiah Athmer: AI engineer for scientific R&amp;D.">
-  <link rel="stylesheet" href="askme.css">
-  <style>
-    :root {
-      --page-bg: #f3f1ec;
-      --page-fg: #2b3036;
-      --page-muted: #6b7178;
-      --ridge-far: #c9cfd0;
-      --ridge-near: #a9b4b0;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --page-bg: #15191d;
-        --page-fg: #e4e2dd;
-        --page-muted: #9aa0a6;
-        --ridge-far: #232a30;
-        --ridge-near: #2c353b;
-      }
-    }
-    :root[data-theme="dark"] {
-      --page-bg: #15191d;
-      --page-fg: #e4e2dd;
-      --page-muted: #9aa0a6;
-      --ridge-far: #232a30;
-      --ridge-near: #2c353b;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--page-bg);
-      color: var(--page-fg);
-      font: 17px/1.6 Georgia, "Iowan Old Style", "Palatino Linotype", serif;
-    }
-    .ridge { display: block; width: 100%; height: 22vh; min-height: 120px; }
-    main { max-width: 40rem; margin: 0 auto; padding: 2.5rem 16px 4rem; }
-    h1 { font-weight: 400; font-size: 2.2rem; margin: 0; letter-spacing: 0.01em; }
-    .tagline { color: var(--page-muted); margin: 0.25rem 0 2.5rem; }
-    .askme { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 1rem; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeremiah Athmer</title>
+<meta name="description" content="Jeremiah Athmer: molecular biologist building AI tools for people who work at the bench. Arvada, Colorado.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Barlow+Condensed:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+<link rel="stylesheet" href="askme.css">
+<style>
+/* Layout: layered Front Range ridgelines across the top, photo set on the ridge, one narrow column below like a trail register. */
+:root {
+  color-scheme: light;
+  --sky: #e9eef1;
+  --paper: #f5f6f3;
+  --ink: #1e2b29;        /* spruce */
+  --muted: #5d6b67;
+  --rule: #d6dbd4;
+  --ridge-far: #b9c7cf;
+  --ridge-mid: #8297a1;
+  --ridge-near: #3f5550;
+  --aspen: #b07d1c;      /* aspen gold, small marks only */
+  --display: "Bitter", "Rockwell", Georgia, serif;
+  --label: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Newsreader", "Iowan Old Style", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --sky: #141c26; --paper: #101614; --ink: #e4e9e4; --muted: #9aa8a2; --rule: #27322f;
+    --ridge-far: #2a3644; --ridge-mid: #1f2a33; --ridge-near: #162019; --aspen: #e0ac4a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --sky: #141c26; --paper: #101614; --ink: #e4e9e4; --muted: #9aa8a2; --rule: #27322f;
+  --ridge-far: #2a3644; --ridge-mid: #1f2a33; --ridge-near: #162019; --aspen: #e0ac4a; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.25rem/1.6 var(--body); }
+a { color: inherit; text-decoration-color: var(--aspen); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--aspen); outline-offset: 3px; border-radius: 2px; }
+
+.range { background: var(--sky); position: relative; }
+.range img { display: block; width: 100%; height: clamp(240px, 42vw, 460px); object-fit: cover; object-position: center 62%; }
+.range::after { content: ""; position: absolute; inset: auto 0 0; height: 38%; background: linear-gradient(to bottom, transparent, var(--paper)); pointer-events: none; }
+
+.gutter {
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 36rem; margin: 0 auto; padding-block: 0 64px; }
+
+.portrait {
+  width: 150px; aspect-ratio: 4 / 5; max-width: 100%;
+  margin: -110px 0 28px; position: relative;
+  border-radius: 4px; overflow: hidden;
+  background: var(--paper); border: 4px solid var(--paper); padding: 0;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+h1 { font: 700 clamp(2.3rem, 7vw, 3.2rem)/1.05 var(--display); letter-spacing: -0.015em; margin: 0 0 6px; text-wrap: balance; }
+.where { font: 500 1rem/1.4 var(--label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 0 0 32px; display: flex; align-items: center; gap: 10px; }
+.where::before { content: ""; width: 22px; height: 2px; background: var(--aspen); }
+
+.intro p { margin: 0 0 1.1em; }
+.intro p:first-child { font-size: 1.4rem; line-height: 1.45; }
+
+h2 { font: 600 0.95rem/1 var(--label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+.block { margin-top: 44px; padding-top: 26px; border-top: 1px solid var(--rule); }
+
+.links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; }
+.email { font: 500 1.15rem/1.4 var(--label); letter-spacing: 0.03em; user-select: all; overflow-wrap: anywhere; }
+.copy { font: 600 0.85rem/1 var(--label); letter-spacing: 0.12em; text-transform: uppercase; background: none; color: var(--ink); border: 1px solid var(--rule); border-radius: 3px; padding: 7px 11px; cursor: pointer; }
+.copy:hover { border-color: var(--aspen); }
+.note { font: 500 0.9rem/1 var(--label); color: var(--muted); letter-spacing: 0.06em; }
+.li { font: 500 1.15rem/1.4 var(--label); letter-spacing: 0.03em; }
+
+.soon { font-style: italic; color: var(--muted); font-size: 1.05rem; margin: 0; }
+
+footer { margin-top: 64px; font: 500 0.9rem/1.5 var(--label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+/* Ask widget, themed to the page. */
+.askme {
+  --askme-fg: var(--ink);
+  --askme-muted: var(--muted);
+  --askme-line: var(--rule);
+  --askme-surface: var(--sky);
+  --askme-accent: var(--aspen);
+  --askme-accent-fg: var(--paper);
+  --askme-radius: 3px;
+  font: 400 1.1rem/1.5 var(--body);
+  max-width: none;
+}
+.askme-form:not(.askme-gate) .askme-label {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.askme-gate .askme-label { font: 500 1rem/1.4 var(--body); font-style: italic; }
+.askme-input { font: 400 1.15rem/1.4 var(--body); }
+.askme-button {
+  font: 600 0.85rem/1 var(--label); letter-spacing: 0.12em; text-transform: uppercase;
+  background: var(--ink); color: var(--paper); padding: 9px 14px;
+}
+.askme-card { background: transparent; border-color: var(--rule); }
+.askme-card-head { font: 600 0.85rem/1.3 var(--label); letter-spacing: 0.08em; text-transform: uppercase; }
+.askme-card-title { font-weight: 600; }
+.askme-card-statement { font-size: 1.1rem; }
+.askme-card-evidence { font: 500 0.95rem/1.3 var(--label); letter-spacing: 0.04em; }
+.askme a { color: inherit; text-decoration-color: var(--aspen); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.askme-note { font: 500 0.85rem/1.4 var(--label); letter-spacing: 0.06em; }
+</style>
 </head>
 <body>
-  <svg class="ridge" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
-    <path fill="var(--ridge-far)" d="M0 200 L0 120 L140 60 L260 110 L400 30 L560 105 L700 55 L840 100 L980 40 L1100 90 L1200 70 L1200 200 Z"/>
-    <path fill="var(--ridge-near)" d="M0 200 L0 160 L180 110 L330 150 L480 95 L650 155 L800 115 L960 150 L1080 120 L1200 145 L1200 200 Z"/>
-  </svg>
-  <main>
-    <h1>Jeremiah Athmer</h1>
-    <p class="tagline">Scientist who writes the code.</p>
 
+<div class="range">
+  <img src="img/header.jpg" width="1800" height="1076" alt="Alpine basin below brown peaks under a blue sky with clouds, Colorado">
+</div>
+
+<div class="gutter">
+<main>
+  <figure class="portrait">
+    <img src="img/portrait.jpg" width="400" height="500" alt="Jeremiah Athmer">
+  </figure>
+
+  <h1>Jeremiah Athmer</h1>
+  <p class="where">Arvada, Colorado</p>
+
+  <div class="intro">
+    <p>I'm a molecular biologist who ended up writing software, and now I build AI tools for people who work at the bench.</p>
+    <p>I got into science to make a difference, and I still care most about finding a problem people actually have before building anything. These days that means figuring out where AI agents genuinely help in a lab and where they just add noise.</p>
+    <p>When I'm not working I'm usually building something around the house or heading up into the mountains.</p>
+  </div>
+
+  <div class="block">
+    <h2>Ask about my work</h2>
     <div data-askme
          data-api="https://jackobe34--askme-api.us-east.modal.run"
          data-sitekey="0x4AAAAAAFekWn2HNnuE7Abi"
-         data-contact="https://www.linkedin.com/in/jeremiah-athmer-2b11a0127"></div>
-  </main>
-  <script src="askme.js" defer></script>
+         data-contact="#hello"></div>
+  </div>
+
+  <div class="block">
+    <h2>Lately</h2>
+    <p class="soon">Coming soon: notes on biology, AI, and building things, plus a log of projects as they happen.</p>
+  </div>
+
+  <div class="block" id="hello">
+    <h2>Say hello</h2>
+    <div class="links">
+      <span class="email" id="email">athmerjeremiah@gmail.com</span>
+      <button class="copy" id="copy" type="button">Copy</button>
+      <span class="note" id="note" aria-live="polite"></span>
+    </div>
+    <p class="links" style="margin: 14px 0 0"><a class="li" href="https://www.linkedin.com/in/jeremiah-athmer/" target="_blank" rel="noopener">LinkedIn</a></p>
+  </div>
+
+  <footer>© 2026 Jeremiah Athmer · Header photo, 2025</footer>
+</main>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('copy'), note = document.getElementById('note'), email = document.getElementById('email');
+  btn.addEventListener('click', function () {
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(email);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      note.textContent = 'Selected';
+    }
+    try { navigator.clipboard.writeText(email.textContent).then(function () { note.textContent = 'Copied'; }, fallback); }
+    catch (e) { fallback(); }
+  });
+})();
+</script>
+<script src="askme.js" defer></script>
 </body>
 </html>
