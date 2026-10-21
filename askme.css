@@ -1,0 +1,164 @@
+/* Ask About Me widget. Themed through the --askme-* tokens; override them on the host page. */
+:root {
+  --askme-fg: #2b3036;
+  --askme-muted: #6b7178;
+  --askme-line: #d6d2c9;
+  --askme-surface: #faf8f4;
+  --askme-accent: #4c6a5c;
+  --askme-accent-fg: #ffffff;
+  --askme-radius: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --askme-fg: #e4e2dd;
+    --askme-muted: #9aa0a6;
+    --askme-line: #3a3f45;
+    --askme-surface: #20242a;
+    --askme-accent: #8fb3a1;
+    --askme-accent-fg: #14181c;
+  }
+}
+
+:root[data-theme="dark"] {
+  --askme-fg: #e4e2dd;
+  --askme-muted: #9aa0a6;
+  --askme-line: #3a3f45;
+  --askme-surface: #20242a;
+  --askme-accent: #8fb3a1;
+  --askme-accent-fg: #14181c;
+}
+
+.askme {
+  color: var(--askme-fg);
+  max-width: 40rem;
+}
+
+.askme-label {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--askme-muted);
+  margin-bottom: 0.5rem;
+}
+
+.askme-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.askme-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--askme-line);
+  padding: 0.5rem 0.1rem;
+}
+
+.askme-input:focus {
+  outline: none;
+  border-bottom-color: var(--askme-accent);
+}
+
+.askme-button {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--askme-accent-fg);
+  background: var(--askme-accent);
+  border: 0;
+  border-radius: var(--askme-radius);
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+}
+
+.askme-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.askme-button:focus-visible,
+.askme-input:focus-visible,
+.askme a:focus-visible {
+  outline: 2px solid var(--askme-accent);
+  outline-offset: 2px;
+}
+
+.askme-output {
+  margin-top: 1.25rem;
+}
+
+.askme-status,
+.askme-message,
+.askme-intro {
+  margin: 0;
+  color: var(--askme-muted);
+}
+
+.askme-status {
+  font-style: italic;
+}
+
+.askme a {
+  color: var(--askme-accent);
+}
+
+.askme-cards {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.askme-card {
+  background: var(--askme-surface);
+  border: 1px solid var(--askme-line);
+  border-radius: var(--askme-radius);
+  padding: 0.85rem 1rem;
+}
+
+.askme-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-size: 0.85rem;
+  color: var(--askme-muted);
+}
+
+.askme-card-title {
+  font-weight: 600;
+}
+
+.askme-card-statement {
+  margin: 0.4rem 0 0;
+  line-height: 1.5;
+}
+
+.askme-card-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.askme-challenge:empty {
+  display: none;
+}
+
+.askme-challenge {
+  margin-top: 1rem;
+}
+
+.askme-note {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  color: var(--askme-muted);
+}
+
+.askme [hidden] {
+  display: none !important;
+}
