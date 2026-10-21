@@ -45,10 +45,22 @@ a { color: inherit; text-decoration-color: var(--aspen); text-decoration-thickne
 a:focus-visible, button:focus-visible { outline: 2px solid var(--aspen); outline-offset: 3px; border-radius: 2px; }
 
 /* The photo runs down to the bottom edge of the portrait: the portrait is pulled up by its own
-   height, and the banner grows by the part of the portrait that used to hang below it. */
-:root { --portrait-w: 150px; --portrait-h: calc(var(--portrait-w) * 5 / 4); }
+   height so its bottom sits on the banner's bottom edge. On narrow screens the banner also grows
+   by the part of the portrait that would otherwise cover it; on wide screens the portrait sits
+   in the left half and the text column runs from the center to the right. */
+:root {
+  --portrait-w: 180px;
+  --portrait-h: calc(var(--portrait-w) * 5 / 4);
+  --banner-h: calc(clamp(240px, 42vw, 460px) + var(--portrait-h) - 110px);
+}
+@media (min-width: 900px) {
+  :root {
+    --portrait-w: clamp(240px, 22vw, 320px);
+    --banner-h: calc(clamp(240px, 42vw, 460px) + 78px);
+  }
+}
 .range { background: var(--sky); position: relative; }
-.range img { display: block; width: 100%; height: calc(clamp(240px, 42vw, 460px) + var(--portrait-h) - 110px); object-fit: cover; object-position: center 30%; }
+.range img { display: block; width: 100%; height: var(--banner-h); object-fit: cover; object-position: center 30%; }
 .range::after { content: ""; position: absolute; inset: auto 0 0; height: 56px; background: linear-gradient(to bottom, transparent, var(--paper)); pointer-events: none; }
 
 .gutter {
@@ -65,6 +77,18 @@ main { max-width: 48rem; margin: 0; padding-block: 0 64px; }
   box-shadow: 0 0 0 1px var(--rule);
 }
 .portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+@media (min-width: 900px) {
+  .gutter { padding-left: 0; padding-right: 0; }
+  main {
+    max-width: none;
+    display: grid;
+    grid-template-columns: 50% minmax(0, 48rem);
+    padding-right: max(20px, 4vw, env(safe-area-inset-right, 0px));
+  }
+  .portrait { justify-self: start; margin-left: max(20px, 6vw, env(safe-area-inset-left, 0px)); margin-bottom: 0; }
+  .content { padding-top: 28px; }
+}
 
 h1 { font: 700 clamp(2.3rem, 7vw, 3.2rem)/1.05 var(--display); letter-spacing: -0.015em; margin: 0 0 6px; text-wrap: balance; }
 .where { font: 500 1rem/1.4 var(--label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 0 0 32px; display: flex; align-items: center; gap: 10px; }
@@ -129,6 +153,7 @@ footer { margin-top: 64px; font: 500 0.9rem/1.5 var(--label); letter-spacing: 0.
     <img src="img/portrait.jpg" width="400" height="500" alt="Jeremiah Athmer">
   </figure>
 
+  <div class="content">
   <h1>Jeremiah Athmer</h1>
   <p class="where">Arvada, Colorado</p>
 
@@ -162,6 +187,7 @@ footer { margin-top: 64px; font: 500 0.9rem/1.5 var(--label); letter-spacing: 0.
   </div>
 
   <footer>© 2026 Jeremiah Athmer · Header photo, 2025</footer>
+  </div>
 </main>
 </div>
 
