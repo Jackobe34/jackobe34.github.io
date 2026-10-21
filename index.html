@@ -44,9 +44,12 @@ body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.25rem
 a { color: inherit; text-decoration-color: var(--aspen); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--aspen); outline-offset: 3px; border-radius: 2px; }
 
+/* The photo runs down to the bottom edge of the portrait: the portrait is pulled up by its own
+   height, and the banner grows by the part of the portrait that used to hang below it. */
+:root { --portrait-w: 150px; --portrait-h: calc(var(--portrait-w) * 5 / 4); }
 .range { background: var(--sky); position: relative; }
-.range img { display: block; width: 100%; height: clamp(240px, 42vw, 460px); object-fit: cover; object-position: center 30%; }
-.range::after { content: ""; position: absolute; inset: auto 0 0; height: 38%; background: linear-gradient(to bottom, transparent, var(--paper)); pointer-events: none; }
+.range img { display: block; width: 100%; height: calc(clamp(240px, 42vw, 460px) + var(--portrait-h) - 110px); object-fit: cover; object-position: center 30%; }
+.range::after { content: ""; position: absolute; inset: auto 0 0; height: 56px; background: linear-gradient(to bottom, transparent, var(--paper)); pointer-events: none; }
 
 .gutter {
   padding-left: max(20px, env(safe-area-inset-left, 0px));
@@ -55,8 +58,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--aspen); outline
 main { max-width: 36rem; margin: 0 auto; padding-block: 0 64px; }
 
 .portrait {
-  width: 150px; aspect-ratio: 4 / 5; max-width: 100%;
-  margin: -110px 0 28px; position: relative;
+  width: var(--portrait-w); aspect-ratio: 4 / 5; max-width: 100%;
+  margin: calc(-1 * var(--portrait-h)) 0 28px; position: relative;
   border-radius: 4px; overflow: hidden;
   background: var(--paper); border: 4px solid var(--paper); padding: 0;
   box-shadow: 0 0 0 1px var(--rule);
