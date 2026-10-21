@@ -52,10 +52,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--aspen); outline
 .range::after { content: ""; position: absolute; inset: auto 0 0; height: 56px; background: linear-gradient(to bottom, transparent, var(--paper)); pointer-events: none; }
 
 .gutter {
-  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-left: max(20px, 6vw, env(safe-area-inset-left, 0px));
   padding-right: max(20px, env(safe-area-inset-right, 0px));
 }
-main { max-width: 36rem; margin: 0 auto; padding-block: 0 64px; }
+main { max-width: 36rem; margin: 0; padding-block: 0 64px; }
 
 .portrait {
   width: var(--portrait-w); aspect-ratio: 4 / 5; max-width: 100%;
