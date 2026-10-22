@@ -13,7 +13,9 @@
   const TEST_SITEKEY = "1x00000000000000000000AA";
   const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
   const REQUEST_TIMEOUT_MS = 150000;
-  const MAX_CHARS = 300;
+  const MAX_WORDS = 200;   // matches askme.decide.MAX_QUESTION_WORDS
+  const MAX_CHARS = 1500;  // matches askme.decide.MAX_QUESTION_CHARS
+  const COUNT_FROM = 150;  // show the word count once a question gets this long
 
   const COPY = {
     label: "Ask about Jeremiah's experience",
@@ -27,6 +29,8 @@
     invalid: "Try a shorter question.",
     reach: "Here's how to reach Jeremiah",
     rateLimited: "That's a lot of questions. Try again in a minute.",
+    locked: "Answers are paused for this connection. Please try again later.",
+    tooLong: `Questions can be up to ${MAX_WORDS} words.`,
     unavailable: "The answer service isn't available right now.",
     verifyFailed: "Couldn't verify this browser. Try reloading the page.",
     note: "Answers are statements Jeremiah wrote, shown word for word.",
@@ -65,6 +69,11 @@
     if (className) node.className = className;
     if (text != null) node.textContent = text;
     return node;
+  }
+
+  function wordCount(text) {
+    const t = text.trim();
+    return t ? t.split(/\s+/).length : 0;
   }
 
   function safeUrl(url) {
@@ -108,16 +117,38 @@
       const label = el("label", "askme-label", COPY.label);
       label.htmlFor = id;
       const row = el("div", "askme-row");
-      this.input = el("input", "askme-input");
-      Object.assign(this.input, { id, type: "text", placeholder: COPY.placeholder, maxLength: MAX_CHARS, autocomplete: "off" });
+      this.input = el("textarea", "askme-input");
+      Object.assign(this.input, { id, rows: 1, placeholder: COPY.placeholder, maxLength: MAX_CHARS, autocomplete: "off" });
       this.button = el("button", "askme-button", COPY.submit);
       this.button.type = "submit";
       row.append(this.input, this.button);
-      form.append(label, row);
+      this.counter = el("p", "askme-counter");
+      this.counter.hidden = true;
+      form.append(label, row, this.counter);
+      const submit = () => {
+        const q = this.input.value.trim();
+        if (!q || this.busy) return;
+        if (wordCount(q) > MAX_WORDS) return this.message(COPY.tooLong);
+        this.ask(q);
+      };
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const q = this.input.value.trim();
-        if (q && !this.busy) this.ask(q);
+        submit();
+      });
+      // Enter asks; Shift+Enter adds a line. The box grows with the question.
+      this.input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+          e.preventDefault();
+          submit();
+        }
+      });
+      this.input.addEventListener("input", () => {
+        this.input.style.height = "auto";
+        this.input.style.height = `${this.input.scrollHeight}px`;
+        const n = wordCount(this.input.value);
+        this.counter.hidden = n < COUNT_FROM;
+        this.counter.textContent = `${n} / ${MAX_WORDS} words`;
+        this.counter.classList.toggle("askme-counter-over", n > MAX_WORDS);
       });
 
       this.form = form;
@@ -200,7 +231,7 @@
         if (code) store.clear();
         throw new Error(code ? "code_invalid" : "code_required");
       }
-      if (r.status === 403) throw new Error("verify");
+      if (r.status === 403) throw new Error(r.data && r.data.error === "locked" ? "locked" : "verify");
       if (r.status === 429) throw new Error("rate");
       if (r.status !== 200 || !r.data || !r.data.session) throw new Error("unavailable");
       this.warmed = true;
@@ -215,17 +246,19 @@
         let session = await this.warm;
         this.status(COPY.thinking);
         let r = await post(`${this.api}/ask`, { question, session });
-        if (r.status === 403) {  // session expired: verify again, once
+        if (r.status === 403 && r.data && r.data.error === "session_invalid") {  // expired: verify again, once
           this.startWarm();
           session = await this.warm;
           r = await post(`${this.api}/ask`, { question, session });
         }
+        if (r.status === 403 && r.data && r.data.error === "locked") return this.message(COPY.locked);
         if (r.status === 429) return this.message(COPY.rateLimited);
         if (r.status !== 200 || !r.data) return this.message(COPY.unavailable, true);
         this.render(r.data);
       } catch (err) {
         const msg = err && err.message;
         if (msg === "code_required" || msg === "code_invalid") return;  // the gate is already showing
+        if (msg === "locked") return this.message(COPY.locked);
         if (msg === "verify") this.message(COPY.verifyFailed, true);
         else if (msg === "rate") this.message(COPY.rateLimited);
         else this.message(COPY.unavailable, true);

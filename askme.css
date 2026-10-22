@@ -42,6 +42,7 @@
 }
 
 .askme-row {
+  align-items: flex-end;
   display: flex;
   gap: 0.5rem;
 }
@@ -161,4 +162,21 @@
 
 .askme [hidden] {
   display: none !important;
+}
+
+textarea.askme-input {
+  resize: none;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.askme-counter {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--askme-muted);
+  text-align: right;
+}
+
+.askme-counter-over {
+  color: #b3261e;
 }
