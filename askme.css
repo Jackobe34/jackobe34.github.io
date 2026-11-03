@@ -97,6 +97,16 @@
   color: var(--askme-muted);
 }
 
+.askme-answer {
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.askme-cite {
+  color: var(--askme-muted);
+  font-size: 0.85em;
+}
+
 .askme-status {
   font-style: italic;
 }

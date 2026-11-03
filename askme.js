@@ -3,7 +3,8 @@
  * data-contact="https://..."></div> plus askme.css and this script.
  *
  * On page load it runs Cloudflare Turnstile and posts the token to /warm, which wakes
- * the model. Answers are entries Jeremiah wrote, rendered with textContent only, so
+ * the model. Answers are a short summary the model wrote and checked against Jeremiah's
+ * record, then the entries he wrote; all of it is rendered with textContent only, so
  * nothing here can turn into markup. Every other string on screen is fixed copy below.
  */
 (() => {
@@ -27,13 +28,14 @@
     noMatch: "That's not in my record.",
     outOfScope: "I can only answer questions about Jeremiah's professional experience.",
     invalid: "Try a shorter question.",
+    englishOnly: "I can only answer questions in English for now.",
     reach: "Here's how to reach Jeremiah",
     rateLimited: "That's a lot of questions. Try again in a minute.",
     locked: "Answers are paused for this connection. Please try again later.",
     tooLong: `Questions can be up to ${MAX_WORDS} words.`,
     unavailable: "The answer service isn't available right now.",
     verifyFailed: "Couldn't verify this browser. Try reloading the page.",
-    note: "Answers are statements Jeremiah wrote, shown word for word.",
+    note: "Summaries are written by a model and checked against Jeremiah's record. The cards are his own words.",
     gateLabel: "This is a preview for friends. Enter the access code.",
     gateWrong: "That code didn't work. Try again.",
     gateSubmit: "Unlock",
@@ -290,14 +292,15 @@
     render(data) {
       if (!data.answerable || !Array.isArray(data.entries) || !data.entries.length) {
         if (data.reason === "invalid") return this.message(COPY.invalid);
+        if (data.reason === "english_only") return this.message(COPY.englishOnly);
         if (data.reason === "out_of_scope") return this.message(COPY.outOfScope, true);
         return this.message(COPY.noMatch, true);
       }
       const list = el("ul", "askme-cards");
-      for (const entry of data.entries) {
+      for (const [i, entry] of data.entries.entries()) {
         const card = el("li", "askme-card");
         const head = el("div", "askme-card-head");
-        head.append(el("span", "askme-card-title", entry.title));
+        head.append(el("span", "askme-card-title", `[${i + 1}] ${entry.title}`));
         if (entry.dates) head.append(el("span", "askme-card-dates", entry.dates));
         card.append(head, el("p", "askme-card-statement", entry.statement));
         const links = (entry.evidence || []).filter((ev) => safeUrl(ev.url));
@@ -314,7 +317,16 @@
         }
         list.append(card);
       }
-      this.output.replaceChildren(el("p", "askme-intro", COPY.intro), list);
+      const summary = el("p", "askme-answer");
+      for (const s of Array.isArray(data.answer) ? data.answer : []) {
+        if (typeof s.text !== "string") continue;
+        if (summary.childNodes.length) summary.append(" ");
+        summary.append(s.text);
+        const cites = (Array.isArray(s.cites) ? s.cites : []).filter((n) => Number.isInteger(n));
+        if (cites.length) summary.append(" ", el("span", "askme-cite", `[${cites.join(", ")}]`));
+      }
+      const head = summary.childNodes.length ? [summary] : [];
+      this.output.replaceChildren(...head, el("p", "askme-intro", COPY.intro), list);
     }
   }
 
